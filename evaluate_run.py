@@ -1,6 +1,9 @@
 from human_eval.data import write_jsonl, read_problems 
 from transformers import LlamaTokenizer, LlamaForCausalLM 
 import argparse 
+import torch 
+
+torch_device = "cuda" if torch.cuda.is_available() else "cpu" 
 
 import socket
 
@@ -28,8 +31,8 @@ args.add_argument("--model_name", type = str, required = True)
 
 def generate_one_completion(prompt): 
     tokenizer = LlamaTokenizer.from_pretrained(args.model_name, cache_dir = dir_models) 
-    model = LlamaForCausalLM.from_pretrained(args.model_name, cache_dir = dir_models) 
-    input_ids = tokenizer.encode(prompt, return_tensors = "pt") 
+    model = LlamaForCausalLM.from_pretrained(args.model_name, cache_dir = dir_models).to(torch.bfloat16).to(torch_device) 
+    input_ids = tokenizer.encode(prompt, return_tensors = "pt").to(torch_device) 
     
     output_sequences = model.generate(
         input_ids, 
