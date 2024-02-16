@@ -51,7 +51,8 @@ args = args.parse_args()
 
 problems = read_problems() 
 
-num_samples_per_task = 200 
+# num_samples_per_task = 200 
+num_samples_per_task = 100 
 samples = [
     dict(task_id=task_id, completion=generate_one_completion(problems[task_id]["prompt"]))
     for task_id in problems
